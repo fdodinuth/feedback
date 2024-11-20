@@ -1,0 +1,2 @@
+Flask==2.3.3  # Ensure the Flask version is compatible with your project
+gunicorn==20.1.0  # For running the application in production

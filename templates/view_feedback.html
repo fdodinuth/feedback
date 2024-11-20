@@ -1,0 +1,92 @@
+<!-- view_feedback.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Feedback</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+        }
+        .glowing {
+            color: #fff;
+            text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ff0000, 0 0 20px #ff0000;
+        }
+        button {
+            background-color: #333;
+            border: none;
+            padding: 10px 20px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="glowing">Login</h1>
+        <input type="text" placeholder="Username" id="username"><br><br>
+        <input type="password" placeholder="Password" id="password"><br><br>
+        <button onclick="login()">Login</button>
+        <hr>
+        <h2 class="glowing">Feedbacks</h2>
+        <div id="feedbacks">
+            <!-- Feedbacks will be displayed here -->
+        </div>
+        <br><br>
+        <button onclick="copyFeedbacks()">Copy All Feedbacks</button>
+    </div>
+
+    <script>
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username === "admin" && password === "Dinuth") {
+                fetchFeedbacks();
+            } else {
+                alert("Invalid credentials.");
+            }
+        }
+
+        function fetchFeedbacks() {
+            // Send a request to the Flask server to get all feedbacks
+            fetch('/get_feedbacks')
+                .then(response => response.json())
+                .then(data => {
+                    const feedbacksDiv = document.getElementById('feedbacks');
+                    data.feedbacks.forEach(feedback => {
+                        const feedbackItem = document.createElement('p');
+                        feedbackItem.textContent = `${feedback.star} stars - ${feedback.feedback}`;
+                        feedbacksDiv.appendChild(feedbackItem);
+                    });
+                });
+        }
+
+        function copyFeedbacks() {
+            const feedbacksDiv = document.getElementById('feedbacks');
+            let allFeedbacks = "";
+            feedbacksDiv.querySelectorAll('p').forEach(p => {
+                allFeedbacks += p.textContent + "\n";
+            });
+            navigator.clipboard.writeText(allFeedbacks);
+            alert("All feedbacks copied!");
+        }
+    </script>
+</body>
+</html>
